@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<title>2026학년도 목일중학교 학교평가 설문</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --brand:#0000CD;          /* 교표 파랑 */
+    --brand-d:#00009a;
+    --brand-50:#eef0ff;
+    --brand-100:#dfe3ff;
+    --ink:#141833;
+    --ink-2:#4a4f6a;
+    --ink-3:#7d8199;
+    --line:#e3e6f0;
+    --bg:#f5f6fb;
+    --card:#ffffff;
+    --warn:#b4261e;
+    --warn-bg:#fdecea;
+    --ok:#0f7b4a;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    background:var(--bg);color:var(--ink);font-size:17px;line-height:1.6;
+    word-break:keep-all;overflow-wrap:anywhere;-webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px calc(32px + env(safe-area-inset-bottom))}
+
+  /* 머리글 */
+  .hero{background:var(--brand);color:#fff;padding:22px 0 26px}
+  .hero .wrap{padding-bottom:0}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{width:34px;height:33px;border-radius:5px;background:#fff;padding:2px}
+  .brand b{font-size:17px;letter-spacing:-.01em}
+  .brand small{display:block;font-size:11px;opacity:.75;letter-spacing:.06em}
+  .hero h1{font-size:24px;line-height:1.35;margin:18px 0 4px;letter-spacing:-.02em}
+  .hero p{margin:0;opacity:.85;font-size:15px}
+
+  .banner{margin:14px 0 0;padding:12px 14px;border-radius:12px;font-size:14.5px;line-height:1.5}
+  .banner.test{background:#fff6d6;color:#6b5200;border:1px solid #f2dd8f}
+
+  /* 진행 막대 */
+  .progress{position:sticky;top:0;z-index:20;background:rgba(245,246,251,.96);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);padding:10px 0}
+  .progress .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--ink-2);margin-bottom:6px}
+  .progress .row b{color:var(--brand);font-size:15px}
+  .bar{height:8px;background:var(--brand-100);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--brand);border-radius:99px;transition:width .3s}
+
+  /* 카드 */
+  .card{background:var(--card);border-radius:var(--radius);padding:20px 18px;margin:14px 0;box-shadow:0 1px 2px rgba(20,24,51,.05);border:1px solid var(--line)}
+  .card h2{font-size:20px;margin:0 0 8px;letter-spacing:-.02em}
+  .muted{color:var(--ink-2);font-size:15px}
+  .list{margin:10px 0 0;padding-left:20px;color:var(--ink-2);font-size:15px}
+  .list li{margin:4px 0}
+
+  /* 대상 선택 */
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .choice{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 16px;border-radius:14px;border:2px solid var(--line);
+    background:#fff;font:inherit;color:var(--ink);text-align:left;cursor:pointer;min-height:104px}
+  .choice .ic{font-size:28px;line-height:1}
+  .choice b{font-size:18px}
+  .choice span{font-size:13px;color:var(--ink-3)}
+  .choice:active,.choice:focus-visible{border-color:var(--brand);background:var(--brand-50);outline:none}
+
+  .grade{display:flex;gap:10px;margin-top:12px}
+  .grade label{flex:1}
+  .grade input{position:absolute;opacity:0;pointer-events:none}
+  .grade span{display:block;text-align:center;padding:14px 0;border-radius:12px;border:2px solid var(--line);font-weight:600;background:#fff}
+  .grade input:checked+span{border-color:var(--brand);background:var(--brand);color:#fff}
+  .grade input:focus-visible+span{outline:3px solid var(--brand-100)}
+
+  /* 영역 제목 */
+  .area{margin:28px 2px 4px;font-size:15px;font-weight:700;color:var(--brand);letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .area:before{content:"";width:4px;height:18px;border-radius:2px;background:var(--brand)}
+  .lead{font-size:15px;color:var(--ink-2);background:var(--brand-50);border-radius:12px;padding:12px 14px;margin:10px 0 0}
+
+  /* 문항 */
+  .q{scroll-margin-top:84px;transition:border-color .2s, box-shadow .2s}
+  .q.missing{border-color:var(--warn);box-shadow:0 0 0 3px var(--warn-bg)}
+  .q .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .num{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;padding:0 9px;border-radius:99px;background:var(--brand);color:#fff;font-weight:700;font-size:14px}
+  .chip{font-size:12.5px;color:var(--ink-2);background:#f0f1f6;border-radius:99px;padding:3px 10px}
+  .chip.tag{background:#fff1e0;color:#8a4b00}
+  .q .text{font-size:18px;font-weight:600;line-height:1.55;margin:0 0 10px;letter-spacing:-.015em}
+  details.ex{margin:0 0 14px}
+  details.ex summary{list-style:none;cursor:pointer;color:var(--brand);font-size:14.5px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:4px 0}
+  details.ex summary::-webkit-details-marker{display:none}
+  details.ex summary:after{content:"▾";font-size:12px;transition:transform .2s}
+  details.ex[open] summary:after{transform:rotate(180deg)}
+  details.ex ul{margin:8px 0 0;padding:14px 18px 14px 32px;background:#f7f8fc;border-radius:10px;font-size:16px;color:#33374f;line-height:1.75;text-align:justify;word-break:normal;overflow-wrap:anywhere}
+  details.ex li{margin:4px 0;text-align:justify}
+
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{position:relative;display:block}
+  .opt input{position:absolute;opacity:0;pointer-events:none}
+  .opt span{display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 14px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:16.5px;cursor:pointer;transition:background .15s,border-color .15s}
+  .opt span:before{content:"";flex:0 0 22px;height:22px;border-radius:50%;border:2px solid #b9bdd0;background:#fff;box-sizing:border-box;transition:all .15s}
+  .opt input:checked+span{border-color:var(--brand);background:var(--brand-50);font-weight:700;color:var(--brand-d)}
+  .opt input:checked+span:before{border:7px solid var(--brand)}
+  .opt input:focus-visible+span{outline:3px solid var(--brand-100);outline-offset:1px}
+  .opt.na span{border-style:dashed;color:var(--ink-2)}
+  .likert{position:relative;display:grid;grid-template-columns:repeat(5,1fr);margin:6px -6px 0}
+  .likert:before{content:"";position:absolute;left:10%;right:10%;top:25px;height:4px;border-radius:2px;background:linear-gradient(90deg,#d9dcea,var(--brand-100) 50%,#b9c1ff)}
+  .lk{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;padding:4px 2px 4px}
+  .lk input{position:absolute;opacity:0;pointer-events:none}
+  .lk .dot{position:relative;width:44px;height:44px;border-radius:50%;border:3px solid #b9bdd0;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--ink-3);transition:all .15s;box-sizing:border-box}
+  .lk:hover .dot{border-color:var(--brand)}
+  .lk .t{margin-top:8px;font-size:14.5px;line-height:1.3;color:var(--ink-2);word-break:keep-all;font-weight:600;min-height:2.6em}
+  .lk input:checked + .dot{background:var(--brand);border-color:var(--brand);color:#fff;transform:scale(1.12);box-shadow:0 0 0 5px var(--brand-100)}
+  .lk input:checked ~ .t{color:var(--brand-d);font-weight:800}
+  .lk input:focus-visible + .dot{outline:3px solid var(--brand-100);outline-offset:2px}
+  @media (max-width:440px){ .likert{margin:6px -10px 0} .lk .t{font-size:13.5px;letter-spacing:-.03em} }
+  @media (max-width:380px){ .lk .dot{width:38px;height:38px} .likert:before{top:22px} .likert{margin:6px -12px 0} .lk .t{font-size:12.5px;letter-spacing:-.05em} }
+  /* 학번 입력 */
+  .sno{width:100%;font:inherit;font-size:30px;font-weight:800;letter-spacing:.35em;text-align:center;padding:14px 10px 14px calc(10px + .35em);border-radius:14px;border:2px solid var(--line);background:#fff;color:var(--ink);margin-top:14px;font-variant-numeric:tabular-nums}
+  .sno:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-100)}
+  .sno.bad{border-color:var(--warn)}
+  .snohint{min-height:24px;margin-top:8px;text-align:center;font-size:15.5px;font-weight:700;color:var(--brand-d)}
+  .snohint.bad{color:var(--warn)}
+  .privacy{display:flex;gap:10px;background:#eef7f1;color:#1d5a3b;border-radius:12px;padding:12px 14px;font-size:14.5px;line-height:1.55;margin-top:14px}
+  .err{display:none;color:var(--warn);font-size:14px;font-weight:600;margin-top:10px}
+  .q.missing .err{display:block}
+
+  textarea{width:100%;min-height:130px;font:inherit;font-size:16px;line-height:1.55;padding:12px 14px;border-radius:12px;border:2px solid var(--line);resize:vertical;color:var(--ink);background:#fff}
+  textarea:focus{outline:none;border-color:var(--brand)}
+  .count{text-align:right;font-size:12.5px;color:var(--ink-3);margin-top:4px}
+
+  /* 버튼 */
+  .btn{display:block;width:100%;border:0;border-radius:14px;padding:17px 18px;font:inherit;font-size:18px;font-weight:700;cursor:pointer;background:var(--brand);color:#fff;letter-spacing:-.01em}
+  .btn:active{background:var(--brand-d)}
+  .btn[disabled]{background:#b9bdd0;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--brand);border:2px solid var(--brand-100)}
+  .btn + .btn{margin-top:10px}
+  .linkbtn{background:none;border:0;color:var(--ink-3);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:8px}
+  .center{text-align:center}
+
+  /* 오버레이 & 시트 */
+  .overlay{position:fixed;inset:0;background:rgba(20,24,51,.45);z-index:50;display:none;align-items:flex-end;justify-content:center}
+  .overlay.show{display:flex}
+  .sheet{background:#fff;width:100%;max-width:640px;border-radius:20px 20px 0 0;padding:24px 20px calc(20px + env(safe-area-inset-bottom));animation:up .2s ease-out}
+  .sheet h3{margin:0 0 6px;font-size:20px}
+  @keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+  .overlay.mid{align-items:center}
+  .overlay.mid .sheet{border-radius:20px;margin:0 20px;text-align:center}
+  .spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--brand-100);border-top-color:var(--brand);margin:6px auto 14px;animation:sp 0.9s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#1d2140;color:#fff;padding:12px 18px;border-radius:12px;font-size:15px;z-index:60;opacity:0;pointer-events:none;transition:all .25s;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .done-ic{width:72px;height:72px;border-radius:50%;background:var(--brand);color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center;margin:8px auto 12px}
+  .receipt{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:10px;background:var(--brand-50);color:var(--brand-d);font-weight:700;font-size:15px}
+  .err-box{background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:12px 14px;font-size:15px;margin-top:12px}
+  .hide{display:none!important}
+  @media (min-width:600px){ .hero h1{font-size:28px} }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <img alt="목일중학교 교표" src="data:image/png;base64,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">
+      <div><b>목일중학교</b><small>MOKIL MIDDLE SCHOOL</small></div>
+    </div>
+    <h1 id="title">2026학년도 학교평가 설문</h1>
+    <p id="subtitle">더 좋은 학교를 위한 여러분의 소중한 의견을 듣습니다.</p>
+    <div id="testBanner" class="banner test hide">🧪 <b>테스트 기간</b>입니다. 지금 제출한 응답은 실제 결과와 분리된 ‘테스트’ 시트에 저장됩니다.</div>
+  </div>
+</header>
+
+<div id="progress" class="progress hide">
+  <div class="wrap" style="padding-bottom:0">
+    <div class="row"><span id="progLabel">응답 진행</span><b id="progText">0 / 0</b></div>
+    <div class="bar"><i id="progBar"></i></div>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<div class="overlay" id="confirmOv" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="sheet">
+    <h3 id="cfTitle">응답을 제출할까요?</h3>
+    <p class="muted" style="margin:0 0 18px">제출한 뒤에는 수정할 수 없습니다. 응답은 익명으로 처리됩니다.</p>
+    <button class="btn" id="cfYes">제출하기</button>
+    <button class="btn ghost" id="cfNo">다시 확인할게요</button>
+  </div>
+</div>
+
+<div class="overlay mid" id="sendOv" role="alertdialog" aria-live="assertive">
+  <div class="sheet">
+    <div class="spin"></div>
+    <h3>응답을 저장하고 있어요</h3>
+    <p class="muted" id="sendMsg" style="margin:0">잠시만 기다려 주세요. 창을 닫지 마세요.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ▼▼▼ 여기 한 줄만 고치세요 ▼▼▼
+   Apps Script [배포 관리]에서 복사한 웹 앱 URL(…/exec)을 따옴표 안에 붙여 넣습니다. */
+var API_URL = 'https://script.google.com/macros/s/AKfycbwO-8L1XI0eL_D3HRQeGbR4KrdGpa9mZa6nFxd6-k9InKfdg02qRSUe6x12Y8qcGjJq/exec';
+/* ▲▲▲ 여기까지 ▲▲▲ */
+</script>
+<script>
+function startApp(){
+  'use strict';
+  var S = BOOT.survey, MODE = BOOT.mode;
+  // 통신 방식: GitHub 페이지(API_URL 있음) → 쿠키 없이 fetch / Apps Script 페이지 → google.script.run / 둘 다 없으면 미리보기
+  var USE_FETCH = !!window.API_URL;
+  var IS_PREVIEW = !USE_FETCH && !(window.google && google.script && google.script.run);
+  var KEY_PREFIX = 'mokil-eval-' + S.year + '-';
+  var app = document.getElementById('app');
+
+  /* ---------- 상태 ---------- */
+  var st = { group: BOOT.group || '', grade: null, answers: {}, texts: {}, id: null, sending: false };
+
+  /* ---------- 유틸 ---------- */
+  function el(tag, attrs, kids){
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs){
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'text') n.textContent = attrs[k];
+      else if (k.slice(0,2) === 'on') n.addEventListener(k.slice(2), attrs[k]);
+      else n.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach(function(c){ if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function uid(){
+    var a = new Uint8Array(16);
+    (window.crypto || window.msCrypto).getRandomValues(a);
+    return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
+  }
+  var toastT;
+  function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+  function scrollToEl(n){ n.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+  /* ---------- 기기 임시저장 (브라우저가 막으면 조용히 건너뜀) ---------- */
+  function store(){ try { return window.localStorage; } catch(e){ return null; } }
+  function saveDraft(){
+    var ls = store(); if (!ls || !st.group) return;
+    try { ls.setItem(KEY_PREFIX + st.group, JSON.stringify({ id: st.id, grade: st.grade, answers: st.answers, texts: st.texts, ts: Date.now() })); } catch(e){}
+  }
+  function loadDraft(g){
+    var ls = store(); if (!ls) return null;
+    try { var d = JSON.parse(ls.getItem(KEY_PREFIX + g) || 'null'); if (d && Date.now() - d.ts < 1000*60*60*24*30) return d; } catch(e){}
+    return null;
+  }
+  function clearDraft(g){ var ls = store(); if (ls) try { ls.removeItem(KEY_PREFIX + g); } catch(e){} }
+
+  /* ---------- 학번 검사 (서버와 같은 규칙) ---------- */
+  function parseStudentNo(v){
+    var R = BOOT.studentNoRule || { grades:[1,2,3], maxClass:20, maxNo:40 };
+    if (!/^\d{5}$/.test(v || '')) return { ok:false, msg:'학번은 숫자 5자리로 입력해 주세요.' };
+    var g = +v[0], c = +v.slice(1,3), n = +v.slice(3,5);
+    if (R.grades.indexOf(g) < 0) return { ok:false, msg:'학년(첫 자리)을 확인해 주세요.' };
+    if (c < 1 || c > R.maxClass) return { ok:false, msg:'반(가운데 두 자리)을 확인해 주세요.' };
+    if (n < 1 || n > R.maxNo) return { ok:false, msg:'번호(끝 두 자리)를 확인해 주세요.' };
+    return { ok:true, grade:g, cls:c, num:n };
+  }
+
+  /* ---------- 보이는 문항 ---------- */
+  function visibleItems(){
+    var g = S.groups[st.group];
+    return g.items.filter(function(it){ return !(it.grades && (st.grade === null || it.grades.indexOf(st.grade) < 0)); });
+  }
+  function answered(it){ var a = st.answers[it.id]; return a !== undefined && a !== null && a !== ''; }
+
+  function updateProgress(){
+    var items = visibleItems(), done = items.filter(answered).length;
+    document.getElementById('progText').textContent = done + ' / ' + items.length;
+    document.getElementById('progBar').style.width = (items.length ? done / items.length * 100 : 0) + '%';
+  }
+
+  /* ---------- 화면 1: 대상 선택 ---------- */
+  function renderChooser(){
+    document.getElementById('progress').classList.add('hide');
+    app.innerHTML = '';
+    var box = el('div', {class:'choices'});
+    S.order.forEach(function(k){
+      var g = S.groups[k];
+      box.appendChild(el('button', {class:'choice', type:'button', onclick:function(){ st.group = k; renderIntro(); window.scrollTo(0,0); }}, [
+        el('div', {class:'ic', text:g.icon}), el('b', {text: g.label + '용'}), el('span', {text: g.count + '개 문항'})
+      ]));
+    });
+    app.appendChild(el('section', {class:'card'}, [
+      el('h2', {text:'응답하실 분을 선택해 주세요'}),
+      el('p', {class:'muted', style:'margin:0', text:'본인에게 해당하는 설문을 눌러 주세요.'}),
+      box
+    ]));
+  }
+
+  /* ---------- 화면 2: 안내 ---------- */
+  function renderIntro(){
+    if ((BOOT.closedGroups || []).indexOf(st.group) >= 0){ renderClosed(); return; }
+    var g = S.groups[st.group];
+    var isParent = st.group === 'parent';
+    var limit = (BOOT.limitPerNo && BOOT.limitPerNo[st.group]) || 1;
+    var d = loadDraft(st.group);
+    app.innerHTML = '';
+    var mins = Math.max(3, Math.round(g.count * 0.25 + 2));
+    var card = el('section', {class:'card'}, [
+      el('h2', {text: g.icon + ' ' + g.label + '용 설문'}),
+      el('ul', {class:'list'}, [
+        el('li', {text:'총 ' + g.count + '개 문항 + 의견 2개(선택) · 약 ' + mins + '분'}),
+        el('li', {text: !g.askStudentNo ? '이름 등 개인정보는 묻지 않으며, 응답은 익명으로 통계 처리됩니다.'
+          : (isParent ? '이름은 묻지 않습니다. 자녀 학번은 중복 응답 확인에만 쓰이며 응답 내용과 연결되지 않게 따로 보관됩니다. 응답은 익명으로 통계 처리됩니다.'
+                      : '이름은 묻지 않습니다. 학번은 중복 응답 확인에만 쓰이며 응답 내용과 연결되지 않게 따로 보관됩니다. 응답은 익명으로 통계 처리됩니다.')}),
+        el('li', {text:'작성 중인 응답은 이 기기에 자동으로 임시 저장됩니다.'}),
+        el('li', {text:'설문 기간: 11월 30일(월) ~ 12월 4일(금)'}, [ el('div', {style:'font-size:14px;color:var(--ink-3)', text:'※ 학생 설문 기간은 12월 10일(목)까지 연장 예정'}) ])
+      ])
+    ]);
+    app.appendChild(card);
+
+    // 학생: 학번 5자리 확인 (학번은 이 기기·응답 시트에 저장하지 않고, 서버의 별도 학번 목록에만 보관)
+    var snoInput = null, snoHint = null, snoOk = false, blockedNo = null, blockedMsg = '';   // blockedNo: '이미 응답한 학번'으로 막힌 번호
+    st.studentNo = null;
+    if (g.askStudentNo){
+      snoInput = el('input', {class:'sno', type:'text', inputmode:'numeric', pattern:'[0-9]*', maxlength:'5', autocomplete:'off', placeholder:'31501', 'aria-label':'학번 5자리'});
+      snoHint = el('div', {class:'snohint', 'aria-live':'polite'});
+      app.appendChild(el('section', {class:'card'}, [
+        el('h2', {text: isParent ? '자녀의 학번 5자리를 입력해 주세요' : '학번 5자리를 입력해 주세요'}),
+        el('p', {class:'muted', style:'margin:0', text:'예) 3학년 15반 1번 → 31501'}),
+        isParent ? el('p', {class:'muted', style:'margin:6px 0 0', text:'자녀가 둘 이상인 가정은 자녀 1명당 1회씩, 자녀의 학번마다 응답하실 수 있습니다.'}) : null,
+        snoInput, snoHint,
+        el('div', {class:'privacy'}, [ el('span', {text:'🔒'}), el('div', {text: isParent
+          ? '자녀 학번은 한 가정의 응답이 지나치게 중복되지 않도록 확인하는 데에만 쓰입니다. 학번은 응답 내용과 연결되지 않게 따로 보관되므로, 누가 어떤 응답을 했는지는 학교도 알 수 없습니다.'
+          : '학번은 한 사람이 한 번만 응답하도록 확인하는 데에만 쓰입니다. 학번은 응답 내용과 연결되지 않게 따로 보관되므로, 누가 어떤 응답을 했는지는 선생님도 알 수 없습니다.'}) ])
+      ]));
+      snoInput.addEventListener('input', function(){
+        snoInput.value = snoInput.value.replace(/\D/g, '').slice(0, 5);
+        var r = parseStudentNo(snoInput.value);
+        snoOk = !!r.ok;
+        snoInput.classList.toggle('bad', snoInput.value.length === 5 && !r.ok);
+        snoHint.classList.toggle('bad', snoInput.value.length === 5 && !r.ok);
+        snoHint.textContent = r.ok ? ((isParent ? '자녀: ' : '') + r.grade + '학년 ' + r.cls + '반 ' + r.num + '번 맞나요?') : (snoInput.value.length === 5 ? r.msg : '');
+        startBtn.disabled = !snoOk || snoInput.value === blockedNo;   // 막힌 학번 그대로면 계속 잠금
+        if (r.ok && snoInput.value === blockedNo){ snoInput.classList.add('bad'); snoHint.classList.add('bad'); snoHint.textContent = blockedMsg; }
+      });
+    }
+
+    var startBtn = el('button', {class:'btn', type:'button', text: d ? '이어서 응답하기' : '설문 시작하기', style:'margin-top:4px'});
+    if (g.askStudentNo) startBtn.disabled = true;
+    startBtn.addEventListener('click', function(){
+      if (g.askStudentNo){
+        var r = parseStudentNo(snoInput.value);
+        if (!r.ok){ toast(r.msg); return; }
+        startBtn.disabled = true; startBtn.textContent = '학번 확인 중…';
+        callServer('checkStudentNo', { group: st.group, studentNo: snoInput.value }).then(function(res){
+          startBtn.textContent = d ? '이어서 응답하기' : '설문 시작하기';
+          if (res && res.ok){ st.studentNo = snoInput.value; st.grade = g.askGrade ? r.grade : null; begin(); return; }
+          // 이미 응답한 학번이면 버튼을 회색으로 잠그고, 학번을 고치면 다시 풀림
+          if (res && res.code === 'dupStudent'){ blockedNo = snoInput.value; blockedMsg = res.msg; startBtn.disabled = true; }
+          else startBtn.disabled = false;
+          snoHint.classList.add('bad'); snoInput.classList.add('bad');
+          snoHint.textContent = (res && res.msg) || '학번을 확인할 수 없습니다.';
+          if (res && res.code === 'closed') renderClosed();
+        }, function(){
+          startBtn.disabled = false; startBtn.textContent = d ? '이어서 응답하기' : '설문 시작하기';
+          snoHint.classList.add('bad'); snoHint.textContent = '연결이 원활하지 않아요. 잠시 후 다시 눌러 주세요.';
+        });
+        return;
+      }
+      st.grade = null;
+      begin();
+    });
+    function begin(){
+      if (d){ st.answers = d.answers || {}; st.texts = d.texts || {}; st.id = d.id || uid(); }
+      else { st.answers = {}; st.texts = {}; st.id = uid(); }
+      saveDraft();
+      renderSurvey();
+      window.scrollTo(0,0);
+      if (d) toast('작성하던 응답을 불러왔어요.');
+    }
+    app.appendChild(startBtn);
+
+    if (d){
+      app.appendChild(el('div', {class:'center', style:'margin-top:6px'}, [
+        el('button', {class:'linkbtn', type:'button', text:'처음부터 새로 작성', onclick:function(){ clearDraft(st.group); st.grade = null; st.studentNo = null; renderIntro(); }})
+      ]));
+    }
+    if (!BOOT.group){
+      app.appendChild(el('div', {class:'center'}, [ el('button', {class:'linkbtn', type:'button', text:'← 대상 다시 선택', onclick:function(){ st.group=''; st.grade=null; renderChooser(); }}) ]));
+    }
+  }
+
+  /* ---------- 화면 3: 설문 ---------- */
+  function renderSurvey(){
+    var g = S.groups[st.group];
+    app.innerHTML = '';
+    document.getElementById('progress').classList.remove('hide');
+    document.getElementById('progLabel').textContent = g.label + '용' + (g.askGrade ? ' · ' + st.grade + '학년' : '');
+
+    var items = visibleItems(), lastArea = null, lastLead = null;
+    items.forEach(function(it, idx){
+      if (it.area !== lastArea){ app.appendChild(el('div', {class:'area', text: it.area})); lastArea = it.area; }
+      if (it.lead && it.lead !== lastLead){ app.appendChild(el('p', {class:'lead', text: it.lead})); lastLead = it.lead; }
+      app.appendChild(questionCard(it, idx, items));
+    });
+
+    app.appendChild(el('div', {class:'area', text:'의견 쓰기 (선택)'}));
+    S.common.forEach(function(w){
+      var ta = el('textarea', {id:'ta-' + w.id, maxlength:'2000', placeholder:'자유롭게 적어 주세요. (선택 사항)'});
+      ta.value = st.texts[w.id] || '';
+      var cnt = el('div', {class:'count', text: ta.value.length + ' / 2000'});
+      var tmr;
+      ta.addEventListener('input', function(){ st.texts[w.id] = ta.value; cnt.textContent = ta.value.length + ' / 2000'; clearTimeout(tmr); tmr = setTimeout(saveDraft, 400); });
+      app.appendChild(el('section', {class:'card'}, [
+        el('div', {class:'meta'}, [ el('span', {class:'num', text: w.no.replace('서답 ', '✎ ')}) ]),
+        el('label', {class:'text', for:'ta-' + w.id, style:'display:block;font-weight:600;font-size:17.5px;margin-bottom:10px', text: w.text}),
+        ta, cnt
+      ]));
+    });
+
+    var sub = el('button', {class:'btn', type:'button', id:'submitBtn', text:'제출하기', style:'margin-top:22px'});
+    sub.addEventListener('click', trySubmit);
+    app.appendChild(sub);
+    app.appendChild(el('p', {class:'muted center', style:'font-size:13.5px;margin-top:10px', text:'제출 전까지 응답은 이 기기에만 임시 저장됩니다.'}));
+    updateProgress();
+  }
+
+  function questionCard(it, idx, items){
+    var card = el('section', {class:'card q', id:'q-' + it.id, 'aria-labelledby':'qt-' + it.id});
+    var meta = el('div', {class:'meta'}, [ el('span', {class:'num', text: it.no}), el('span', {class:'chip', text: it.sub}) ]);
+    if (it.tag) meta.appendChild(el('span', {class:'chip tag', text: it.tag}));
+    card.appendChild(meta);
+    card.appendChild(el('p', {class:'text', id:'qt-' + it.id, text: it.text}));
+    if (it.ex && it.ex.length){
+      var ul = el('ul'); it.ex.forEach(function(x){ ul.appendChild(el('li', {text:x})); });
+      card.appendChild(el('details', {class:'ex', open:''}, [ el('summary', {text:'활동 예시'}), ul ]));
+    }
+    // 수직선형 5점 척도: 왼쪽 '전혀 그렇지 않다'(1) → 오른쪽 '매우 그렇다'(5). 저장 값은 그대로.
+    var opts = el('div', {role:'radiogroup', 'aria-labelledby':'qt-' + it.id});
+    var line = el('div', {class:'likert'});
+    opts.appendChild(line);
+    var choices = S.scale.slice().sort(function(a, b){ return a.v - b.v; }).map(function(s){ return { v: s.v, label: s.label }; });
+    if (it.na) choices.push({ v: 'NA', label: S.naLabel, na: true });
+    choices.forEach(function(c){
+      var inp = el('input', {type:'radio', name:'r-' + it.id, value:String(c.v)});
+      if (String(st.answers[it.id]) === String(c.v)) inp.checked = true;
+      inp.addEventListener('change', function(){
+        var wasEmpty = !answered(it);
+        st.answers[it.id] = c.v;
+        card.classList.remove('missing');
+        saveDraft(); updateProgress();
+        if (wasEmpty){
+          var next = items[idx + 1];
+          setTimeout(function(){
+            var n = next ? document.getElementById('q-' + next.id) : document.getElementById('ta-W1');
+            if (n && !(next && answered(next))) n.scrollIntoView({behavior:'smooth', block: next ? 'start' : 'center'});
+          }, 280);
+        }
+      });
+      if (c.na) opts.appendChild(el('label', {class:'opt na', style:'margin-top:12px'}, [inp, el('span', {text: c.label + ' (해당 대상이 아닌 경우)'})]));
+      else line.appendChild(el('label', {class:'lk'}, [inp, el('span', {class:'dot', text: String(c.v)}), el('span', {class:'t', text: c.label})]));
+    });
+    card.appendChild(opts);
+    card.appendChild(el('div', {class:'err', text:'⚠ 이 문항에 응답해 주세요.'}));
+    return card;
+  }
+
+  /* ---------- 제출 ---------- */
+  function trySubmit(){
+    if (st.sending) return;
+    var miss = visibleItems().filter(function(it){ return !answered(it); });
+    document.querySelectorAll('.q.missing').forEach(function(n){ n.classList.remove('missing'); });
+    if (miss.length){
+      miss.forEach(function(it){ var n = document.getElementById('q-' + it.id); if (n) n.classList.add('missing'); });
+      toast('응답하지 않은 문항이 ' + miss.length + '개 있어요.');
+      scrollToEl(document.getElementById('q-' + miss[0].id));
+      return;
+    }
+    openOv('confirmOv');
+  }
+  function openOv(id){ document.getElementById(id).classList.add('show'); }
+  function closeOv(id){ document.getElementById(id).classList.remove('show'); }
+  document.getElementById('cfNo').addEventListener('click', function(){ closeOv('confirmOv'); });
+  document.getElementById('cfYes').addEventListener('click', function(){ closeOv('confirmOv'); send(); });
+
+  function callServer(method, payload){
+    return new Promise(function(resolve, reject){
+      var done = false;
+      var t = setTimeout(function(){ if (!done){ done = true; reject(new Error('timeout')); } }, 45000);
+      if (IS_PREVIEW){   // 미리보기: 서버 없이 모의 응답
+        setTimeout(function(){ if (done) return; done = true; clearTimeout(t); resolve(method === 'checkStudentNo' ? { ok:true } : { ok:true, receipt: S.groups[payload.group].label + '-미리보기', mode:'preview' }); }, 700);
+        return;
+      }
+      if (USE_FETCH){
+        // credentials:'omit' → 구글 로그인 쿠키를 보내지 않음(여러 계정 로그인 오류 방지)
+        fetch(window.API_URL, { method:'POST', credentials:'omit', redirect:'follow',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: method, args: payload }) })
+          .then(function(res){ if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+          .then(function(r){ if (done) return; done = true; clearTimeout(t); resolve(r); },
+                function(e){ if (done) return; done = true; clearTimeout(t); reject(e); });
+        return;
+      }
+      google.script.run
+        .withSuccessHandler(function(r){ if (done) return; done = true; clearTimeout(t); resolve(r); })
+        .withFailureHandler(function(e){ if (done) return; done = true; clearTimeout(t); reject(e); })
+        [method](payload);
+    });
+  }
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  function send(){
+    st.sending = true;
+    var btn = document.getElementById('submitBtn'); if (btn) btn.disabled = true;
+    openOv('sendOv');
+    var msg = document.getElementById('sendMsg');
+    msg.textContent = '잠시만 기다려 주세요. 창을 닫지 마세요.';
+    saveDraft();
+
+    var payload = { id: st.id, group: st.group, studentNo: st.studentNo || '', answers: {}, texts: {} };
+    visibleItems().forEach(function(it){ payload.answers[it.id] = st.answers[it.id]; });
+    S.common.forEach(function(w){ payload.texts[w.id] = st.texts[w.id] || ''; });
+
+    // 같은 응답ID로 재시도하므로, 서버에 이미 저장된 경우에도 중복 기록되지 않습니다.
+    var MAX = 6, attempt = 0;
+    function attemptOnce(){
+      attempt++;
+      callServer('submitResponse', payload).then(function(r){
+        if (r && r.ok) return finish(r);
+        var code = r && r.code;
+        if ((code === 'busy' || code === 'error') && attempt < MAX) return retry();
+        fail(r);
+      }, function(){
+        if (attempt < MAX) return retry();
+        fail({ code:'network' });
+      });
+    }
+    function retry(){
+      msg.textContent = '연결이 원활하지 않아 다시 시도하고 있어요 (' + (attempt + 1) + '/' + MAX + ')';
+      var ms = Math.min(10000, 1200 * Math.pow(2, attempt - 1)) + Math.floor(Math.random() * 700);
+      wait(ms).then(attemptOnce);
+    }
+    attemptOnce();
+  }
+
+  function finish(r){
+    st.sending = false;
+    closeOv('sendOv');
+    clearDraft(st.group);
+    var g = S.groups[st.group];
+    document.getElementById('progress').classList.add('hide');
+    app.innerHTML = '';
+    app.appendChild(el('section', {class:'card center', style:'padding:32px 20px'}, [
+      el('div', {class:'done-ic', text:'✓'}),
+      el('h2', {text:'소중한 의견 감사합니다!'}),
+      el('p', {class:'muted', style:'margin:0', text: g.label + '용 설문 응답이 안전하게 저장되었습니다.' + (r.mode === 'test' ? ' (테스트 응답)' : '')}),
+      el('div', {class:'receipt', text:'접수번호 ' + r.receipt}),
+      el('p', {class:'muted', style:'font-size:14px;margin-top:18px', text:'이제 이 창을 닫으셔도 됩니다.'})
+    ]));
+    app.appendChild(el('div', {class:'center'}, [
+      el('button', {class:'linkbtn', type:'button', text: '다른 사람이 이 기기로 새로 응답하기', onclick:function(){ st.answers={}; st.texts={}; st.grade=null; st.id=null; st.studentNo=null; if (BOOT.group) renderIntro(); else renderChooser(); window.scrollTo(0,0); }})
+    ]));
+    window.scrollTo(0,0);
+  }
+
+  function fail(r){
+    st.sending = false;
+    closeOv('sendOv');
+    var btn = document.getElementById('submitBtn'); if (btn) btn.disabled = false;
+    var code = r && r.code;
+    if (code === 'missing' && r.missing && r.missing.length){
+      r.missing.forEach(function(id){ var n = document.getElementById('q-' + id); if (n) n.classList.add('missing'); });
+      var f = document.getElementById('q-' + r.missing[0]); if (f) scrollToEl(f);
+      toast('응답하지 않은 문항이 있어요.');
+      return;
+    }
+    if (code === 'closed'){ renderClosed(); return; }
+    var old = document.getElementById('failBox'); if (old) old.remove();
+    if (code === 'dupStudent'){
+      var box0 = el('div', {class:'err-box', id:'failBox'}, [ el('b', {text:'제출하지 못했어요. '}), (r && r.msg) || '이미 응답한 학번입니다.' ]);
+      btn.parentNode.insertBefore(box0, btn); scrollToEl(box0); return;
+    }
+    var box = el('div', {class:'err-box', id:'failBox'}, [
+      el('b', {text:'제출하지 못했어요. '}),
+      '응답은 이 기기에 그대로 남아 있으니, 인터넷 연결을 확인한 뒤 [제출하기]를 다시 눌러 주세요.',
+      r && r.msg ? el('div', {style:'font-size:13px;margin-top:6px;opacity:.8', text: r.msg}) : null
+    ]);
+    btn.parentNode.insertBefore(box, btn);
+    scrollToEl(box);
+  }
+
+  function renderClosed(){
+    document.getElementById('progress').classList.add('hide');
+    app.innerHTML = '';
+    app.appendChild(el('section', {class:'card center', style:'padding:30px 20px'}, [
+      el('div', {style:'font-size:44px', text:'🗓️'}),
+      el('h2', {text:'설문 기간이 종료되었습니다'}),
+      el('p', {class:'muted', style:'margin:0', text:'참여해 주셔서 감사합니다. 결과는 학교 교육계획 수립에 반영됩니다.'})
+    ]));
+  }
+
+  window.addEventListener('beforeunload', function(e){ if (st.sending){ e.preventDefault(); e.returnValue = ''; } });
+
+  /* ---------- 시작 ---------- */
+  if (MODE === 'test' || MODE === 'preview') document.getElementById('testBanner').classList.remove('hide');
+  if (MODE === 'preview') document.getElementById('testBanner').innerHTML = '👀 <b>디자인 미리보기</b>입니다. 이 화면에서 제출한 응답은 저장되지 않습니다.';
+  if (MODE === 'closed') renderClosed();
+  else if (st.group) renderIntro();
+  else renderChooser();
+}
+if (window.BOOT) startApp();
+</script>
+<script>
+/* GitHub 설문 페이지 시작: 서버(Apps Script)에서 문항·기간 정보를 쿠키 없이 받아 와 화면을 그림 */
+(function(){
+  var app = document.getElementById('app');
+  function msg(title, body, retry){
+    app.innerHTML = '';
+    var c = document.createElement('section'); c.className = 'card center'; c.style.padding = '30px 20px';
+    var h = document.createElement('h2'); h.textContent = title; c.appendChild(h);
+    var p = document.createElement('p'); p.className = 'muted'; p.style.margin = '0'; p.textContent = body; c.appendChild(p);
+    if (retry){ var b = document.createElement('button'); b.className = 'btn'; b.style.marginTop = '18px'; b.textContent = '다시 시도'; b.onclick = load; c.appendChild(b); }
+    app.appendChild(c);
+  }
+  if (!window.API_URL || window.API_URL.indexOf('/exec') < 0){
+    msg('설정이 필요합니다', 'survey.html 맨 위의 API_URL에 Apps Script 웹 앱 주소(…/exec)를 넣어 주세요.', false);
+    return;
+  }
+  var g = '';
+  try { g = new URLSearchParams(location.search).get('g') || ''; } catch(e){}
+  var tries = 0;
+  function load(){
+    tries++;
+    msg('설문을 불러오는 중입니다', '잠시만 기다려 주세요.', false);
+    var url = window.API_URL + (window.API_URL.indexOf('?') < 0 ? '?' : '&') + 'api=boot&g=' + encodeURIComponent(g);
+    fetch(url, { credentials:'omit', redirect:'follow' })
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(data){
+        if (!data || !data.survey) throw new Error('bad data');
+        window.BOOT = data;
+        startApp();
+      })
+      .catch(function(){
+        if (tries < 3) { setTimeout(load, 1500 * tries); return; }
+        msg('설문을 불러오지 못했습니다', '인터넷 연결을 확인한 뒤 [다시 시도]를 눌러 주세요.', true);
+      });
+  }
+  load();
+})();
+</script>
+
+</body>
+</html>
